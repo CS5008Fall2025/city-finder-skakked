@@ -103,3 +103,41 @@ int graph_find_vertex(Graph* graph, const char* name) {
     return -1;  // Not found
 }
 
+/**
+ * Add an edge between two vertices (undirected)
+ */
+bool graph_add_edge(Graph* graph, const char* from, const char* to, int weight) {
+    // Find indices of both cities
+    int from_idx = graph_find_vertex(graph, from);
+    int to_idx = graph_find_vertex(graph, to);
+    
+    // Both cities must exist in the graph
+    if (from_idx == -1 || to_idx == -1) return false;
+    
+    // Add edge from -> to
+    // Create new edge node
+    EdgeNode* new_edge = (EdgeNode*)malloc(sizeof(EdgeNode));
+    new_edge->dest = to_idx;      // Where this edge goes
+    new_edge->weight = weight;    // Distance/cost
+    new_edge->next = graph->vertices[from_idx].edges;  // Insert at head of list
+    graph->vertices[from_idx].edges = new_edge;        // Update head pointer
+    
+    // Add edge to -> from (undirected graph = bidirectional edges)
+    new_edge = (EdgeNode*)malloc(sizeof(EdgeNode));
+    new_edge->dest = from_idx;    // Reverse direction
+    new_edge->weight = weight;    // Same distance
+    new_edge->next = graph->vertices[to_idx].edges;    // Insert at head
+    graph->vertices[to_idx].edges = new_edge;          // Update head pointer
+    
+    return true;
+}
+
+/**
+ * Print all vertices in the graph
+ */
+
+ void graph_print_vertices(Graph* graph) {
+    for (int i = 0; i < graph->num_vertices; i++) {
+        printf("%s\n", graph->vertices[i].name);
+    }
+}
