@@ -32,10 +32,10 @@ Graph* graph_create(int initial_capacity) {
 }
 
 /**
- * Free all memory associated with graph
+ * Free all memory allocated to graph
  */
 void graph_destroy(Graph* graph) {
-    if (!graph) return;  // Safety check for NULL pointer
+    if (!graph) return;  // Check for NULL pointer
     
     // Free each vertex and its edges
     for (int i = 0; i < graph->num_vertices; i++) {
@@ -56,3 +56,50 @@ void graph_destroy(Graph* graph) {
     // Free the graph structure
     free(graph);
 }
+
+/**
+ * Add a vertex to the graph
+ * Returns the index of the vertex
+ */
+int graph_add_vertex(Graph* graph, const char* name) {
+    // Check if vertex already exists - avoid duplicates
+    int idx = graph_find_vertex(graph, name);
+    if (idx != -1) return idx;  // Return existing index
+    
+    // Expand capacity if needed (dynamic array growth)
+    if (graph->num_vertices >= graph->capacity) {
+        graph->capacity *= 2;  // Double the capacity
+        graph->vertices = (Vertex*)realloc(graph->vertices, 
+                                          sizeof(Vertex) * graph->capacity);
+    }
+    
+    // Add new vertex at the end
+    idx = graph->num_vertices;
+    
+    // Allocate and copy the city name
+    graph->vertices[idx].name = (char*)malloc(strlen(name) + 1);  // +1 for null terminator
+    strcpy(graph->vertices[idx].name, name);
+    
+    // Initialize with no edges yet
+    graph->vertices[idx].edges = NULL;
+    
+    // Increment count
+    graph->num_vertices++;
+    
+    return idx;
+}
+
+/**
+ * Find vertex by name
+ * Returns index or -1 if not found
+ */
+int graph_find_vertex(Graph* graph, const char* name) {
+    // Linear search through all vertices
+    for (int i = 0; i < graph->num_vertices; i++) {
+        if (strcmp(graph->vertices[i].name, name) == 0) {
+            return i;  // Found - return index
+        }
+    }
+    return -1;  // Not found
+}
+
