@@ -1,7 +1,7 @@
 /**
  * Name: Siddharth Kakked
  * Semester: Fall 2025
- * CS 5008\
+ * CS 5008
  * Implementation of graph data structure using adjacency list representation
  */
  
