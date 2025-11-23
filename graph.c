@@ -30,3 +30,29 @@ Graph* graph_create(int initial_capacity) {
     
     return graph;
 }
+
+/**
+ * Free all memory associated with graph
+ */
+void graph_destroy(Graph* graph) {
+    if (!graph) return;  // Safety check for NULL pointer
+    
+    // Free each vertex and its edges
+    for (int i = 0; i < graph->num_vertices; i++) {
+        // Free the city name string
+        free(graph->vertices[i].name);
+        
+        // Free all edges in the linked list
+        EdgeNode* edge = graph->vertices[i].edges;
+        while (edge) {
+            EdgeNode* temp = edge;  // Save current edge
+            edge = edge->next;       // Move to next edge
+            free(temp);              // Free the saved edge
+        }
+    }
+    
+    // Free the vertices array itself
+    free(graph->vertices);
+    // Free the graph structure
+    free(graph);
+}
