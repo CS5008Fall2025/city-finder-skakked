@@ -9,6 +9,8 @@
 #define GRAPH_H
 
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 // Edge node in adjacency list represents a connection to another city
 typedef struct EdgeNode {
