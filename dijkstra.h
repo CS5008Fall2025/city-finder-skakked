@@ -27,4 +27,3 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end);
 void path_result_destroy(PathResult* result);
 
 #endif
-
