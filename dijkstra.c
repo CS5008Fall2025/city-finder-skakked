@@ -136,3 +136,13 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
     
     return result;
 }
+
+/**
+ * Free path result memory
+ */
+void path_result_destroy(PathResult* result) {
+    if (result && result->path) {
+        free(result->path);
+        result->path = NULL;
+    }
+}
