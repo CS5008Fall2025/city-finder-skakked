@@ -32,3 +32,29 @@ static int min_distance(int* dist, bool* visited, int n) {
     return min_idx;  // Return vertex with smallest distance
 }
 
+/**
+ * Reconstruct path from start to end using parent array
+ * Parent array stores which vertex we came from to reach each vertex
+ */
+static int* reconstruct_path(int* parent, int start, int end, int* length) {
+    // Count path length by following parent pointers backwards
+    int count = 0;
+    int current = end;
+    while (current != -1) {  // -1 means we've reached the start (no parent)
+        count++;
+        current = parent[current];  // Move to parent
+    }
+    
+    // Allocate array to hold the path
+    int* path = (int*)malloc(sizeof(int) * count);
+    *length = count;  // Return length to caller
+    
+    // Fill path in reverse order (from end to start)
+    current = end;
+    for (int i = count - 1; i >= 0; i--) {
+        path[i] = current;          // Store current vertex
+        current = parent[current];   // Move to parent
+    }
+    
+    return path;  // Path is now in correct order: start -> ... -> end
+}
