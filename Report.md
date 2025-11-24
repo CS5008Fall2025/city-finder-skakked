@@ -3,7 +3,8 @@ Fill out these report questions.
 
 
 1. What is the difference between a directed and undirected graph?
-   > | Feature | Directed Graph | Undirected Graph |
+
+| Feature | Directed Graph | Undirected Graph |
 |---------|----------------|------------------|
 | Edge type | One-way arrow | Two-way line |
 | Direction | Specific, one-way flow | Non-specific, two-way flow |
