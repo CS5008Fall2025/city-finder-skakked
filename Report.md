@@ -35,6 +35,13 @@ Fill out these report questions.
 ## Deeper Thinking
 4. For this assignment, you didn't need the most "efficient" set of data structures (for example, a heap wasn't required). However, think on the scale of google/apple maps - they have to deal with millions of vertices and edges. What data structures would you use to store the graph? Why? Somethings to consider - would you be able to store the entire graph at a time? Could you break it up into smaller pieces? How would you do that? Would there be advantages to caching/memoization of paths? You are free to explore your thoughts on this subject/reflect on various ideas. Other than a realization of some scalability of problems, there isn't a wrong answer. 
 
+   > For something as large as Google Maps with millions of locations, I would use compressed adjacency lists to store the graph efficiently. The entire world's graph cannot fit in memory on one machine, so I would partition it geographically into tiles or regions that load on-demand. Only loading the relevant area for each query plus a small buffer. 
+
+   > Within each region, I would use a priority queue for efficient pathfinding. Caching would be crucial for storing popular routes like "airport to downtown" or pre-computing distances between major cities saves massive computation since many users request similar routes.
+
+   > I would also use a hierarchical approach where highways and major roads have pre-computed shortcuts, so long-distance queries use the simplified highway network instead of examining millions of local streets.
+
+   > Breaking the graph into smaller pieces by geography or using natural boundaries like state lines would help distribute the workload across servers.
 
 
 
