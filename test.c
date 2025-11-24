@@ -100,5 +100,35 @@ void test_add_edges() {
 }
 
 
+/**
+ * Test 5: Shortest Path Selection
+ */
+void test_shortest_path() {
+    printf("\n=== Test 6: Shortest Path Selection ===\n");
+    
+    // Graph with multiple paths
+    Graph* graph = graph_create(5);
+    graph_add_vertex(graph, "a");
+    graph_add_vertex(graph, "b");
+    graph_add_vertex(graph, "c");
+    graph_add_vertex(graph, "d");
+    
+    graph_add_edge(graph, "a", "b", 5);
+    graph_add_edge(graph, "a", "c", 2);
+    graph_add_edge(graph, "b", "d", 1);
+    graph_add_edge(graph, "c", "d", 1);
+    
+    int idx_a = graph_find_vertex(graph, "a");
+    int idx_d = graph_find_vertex(graph, "d");
+    
+    PathResult result = dijkstra_shortest_path(graph, idx_a, idx_d);
+    
+    assert_test(result.found, "Path found");
+    assert_test(result.total_distance == 3, "Shortest distance is 3 (not 6)");
+    
+    path_result_destroy(&result);
+    graph_destroy(graph);
+}
+
 
 
