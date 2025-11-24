@@ -22,7 +22,7 @@ Graph* graph_create(int initial_capacity) {
     graph->num_vertices = 0;  // Start with no vertices
     graph->capacity = initial_capacity;
     
-    // Initialize all vertex slots to NULL (empty)
+    // Initialize all vertex slots to NULL
     for (int i = 0; i < initial_capacity; i++) {
         graph->vertices[i].name = NULL;
         graph->vertices[i].edges = NULL;
@@ -51,7 +51,7 @@ void graph_destroy(Graph* graph) {
         }
     }
     
-    // Free the vertices array itself
+    // Free the vertices array
     free(graph->vertices);
     // Free the graph structure
     free(graph);
@@ -62,11 +62,11 @@ void graph_destroy(Graph* graph) {
  * Returns the index of the vertex
  */
 int graph_add_vertex(Graph* graph, const char* name) {
-    // Check if vertex already exists - avoid duplicates
+    // Check if vertex already exists
     int idx = graph_find_vertex(graph, name);
     if (idx != -1) return idx;  // Return existing index
     
-    // Expand capacity if needed (dynamic array growth)
+    // Expand capacity if needed
     if (graph->num_vertices >= graph->capacity) {
         graph->capacity *= 2;  // Double the capacity
         graph->vertices = (Vertex*)realloc(graph->vertices, 
@@ -104,7 +104,7 @@ int graph_find_vertex(Graph* graph, const char* name) {
 }
 
 /**
- * Add an edge between two vertices (undirected)
+ * Add an edge between two vertices
  */
 bool graph_add_edge(Graph* graph, const char* from, const char* to, int weight) {
     // Find indices of both cities
@@ -114,7 +114,6 @@ bool graph_add_edge(Graph* graph, const char* from, const char* to, int weight) 
     // Both cities must exist in the graph
     if (from_idx == -1 || to_idx == -1) return false;
     
-    // Add edge from -> to
     // Create new edge node
     EdgeNode* new_edge = (EdgeNode*)malloc(sizeof(EdgeNode));
     new_edge->dest = to_idx;      // Where this edge goes

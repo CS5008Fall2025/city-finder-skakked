@@ -12,7 +12,6 @@
 
 /**
  * Find vertex with minimum distance that hasn't been visited
- * This is the key selection step in Dijkstra's algorithm
  */
 static int min_distance(int* dist, bool* visited, int n) {
     int min = INFINITY_DIST;  // Start with infinity
@@ -20,7 +19,6 @@ static int min_distance(int* dist, bool* visited, int n) {
     
     // Check all vertices
     for (int i = 0; i < n; i++) {
-        // Consider only unvisited vertices with finite distance
         if (!visited[i] && dist[i] < min) {
             min = dist[i];      // Update minimum distance
             min_idx = i;        // Update minimum index
@@ -31,14 +29,13 @@ static int min_distance(int* dist, bool* visited, int n) {
 }
 
 /**
- * Reconstruct path from start to end using parent array
- * Parent array stores which vertex we came from to reach each vertex
+ * Reconstruct path from start to end
  */
 static int* reconstruct_path(int* parent, int end, int* length) {
     // Count path length by following parent pointers backwards
     int count = 0;
     int current = end;
-    while (current != -1) {  // -1 means we've reached the start (no parent)
+    while (current != -1) {  // -1 indicates no parent
         count++;
         current = parent[current];  // Move to parent
     }
@@ -47,14 +44,14 @@ static int* reconstruct_path(int* parent, int end, int* length) {
     int* path = (int*)malloc(sizeof(int) * count);
     *length = count;  // Return length to caller
     
-    // Fill path in reverse order (from end to start)
+    // Fill patth from end to start
     current = end;
     for (int i = count - 1; i >= 0; i--) {
         path[i] = current;          // Store current vertex
         current = parent[current];   // Move to parent
     }
     
-    return path;  // Path is now in correct order: start -> ... -> end
+    return path;  // Path from start to end
 }
 
 /**
@@ -74,7 +71,7 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
     // Initialize arrays for algorithm
     int* dist = (int*)malloc(sizeof(int) * n);       // Distance from start to each vertex
     bool* visited = (bool*)malloc(sizeof(bool) * n); // Whether vertex has been processed
-    int* parent = (int*)malloc(sizeof(int) * n);     // Track path: parent[v] = vertex before v
+    int* parent = (int*)malloc(sizeof(int) * n);     // Track path
     
     // Set initial values
     for (int i = 0; i < n; i++) {
@@ -85,18 +82,18 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
     
     dist[start] = 0;  // Distance from start to itself is 0
     
-    // Main algorithm loop - process each vertex
+    // Main algorithm loop
     for (int count = 0; count < n - 1; count++) {
-        // Find unvisited vertex with minimum distance
+        // Find unvisited vertex
         int u = min_distance(dist, visited, n);
         
-        // If no vertex found or all remaining have infinite distance, stop
+        // If no vertex found or all remaining have infinite distance then stop
         if (u == -1 || dist[u] == INFINITY_DIST) break;
         
         // Mark this vertex as processed
         visited[u] = true;
         
-        // Early exit optimization: if we reached destination, we're done
+        // Early exit
         if (u == end) break;
         
         // Update distances for all adjacent vertices
@@ -104,12 +101,11 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
         while (edge) {
             int v = edge->dest;  // Neighbor vertex
             
-            // Only update unvisited vertices with finite distance
             if (!visited[v] && dist[u] != INFINITY_DIST) {
                 // Calculate distance through this path: dist[start->u] + dist[u->v]
                 int new_dist = dist[u] + edge->weight;
                 
-                // If this path is shorter, update it (relaxation step)
+                // If this path is shorter, update it
                 if (new_dist < dist[v]) {
                     dist[v] = new_dist;  // Update distance
                     parent[v] = u;       // Record that we got to v from u
@@ -119,7 +115,7 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
         }
     }
     
-    // Check if path was found (end vertex is reachable)
+    // Check if path was found
     if (dist[end] != INFINITY_DIST) {
         result.found = true;
         result.total_distance = dist[end];

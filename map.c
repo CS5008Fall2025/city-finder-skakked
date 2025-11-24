@@ -29,27 +29,24 @@ void print_help() {
 }
 
 /**
- * Trim leading and trailing whitespace from a string
+ * Trim whitespaces from user input
  */
 void trim_whitespace(char* str) {
     if (!str) return;
     
-    // Trim leading whitespace
+    // Trim front whitespace
     char* start = str;
     while (*start == ' ' || *start == '\t' || *start == '\r') {
         start++;
     }
     
-    // Trim trailing whitespace
+    // Trim back whitespace
     char* end = start + strlen(start) - 1;
     while (end > start && (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')) {
         end--;
     }
     
-    // Null terminate
     *(end + 1) = '\0';
-    
-    // Move trimmed string to beginning if needed
     if (start != str) {
         memmove(str, start, strlen(start) + 1);
     }
@@ -57,7 +54,6 @@ void trim_whitespace(char* str) {
 
 /**
  * Load vertices from file
- * Each line in file is a city name
  */
 bool load_vertices(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -69,10 +65,10 @@ bool load_vertices(Graph* graph, const char* filename) {
     char line[MAX_LINE];
     // Read file line by line
     while (fgets(line, sizeof(line), file)) {
-        // Remove newline character at end
+        // Remove \n at the end
         line[strcspn(line, "\n")] = 0;
         
-        // Trim whitespace from both ends
+        // Trim whitespaces
         trim_whitespace(line);
         
         // Skip empty lines
@@ -88,7 +84,6 @@ bool load_vertices(Graph* graph, const char* filename) {
 
 /**
  * Load distances from file
- * Each line format: city1 city2 distance
  */
 bool load_distances(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -124,15 +119,14 @@ bool load_distances(Graph* graph, const char* filename) {
 
 /**
  * Process user command
- * Returns false if user wants to exit, true to continue
  */
 bool process_command(Graph* graph, char* input) {
-    // Trim whitespace and remove newline
+    // Trim whitespaces and remove \n
     trim_whitespace(input);
     
     // Handle commands
     if (strcmp(input, "exit") == 0) {
-        return false;  // Signal to exit program
+        return false;  // Exits program
     }
     else if (strcmp(input, "help") == 0) {
         print_help();
@@ -168,9 +162,9 @@ bool process_command(Graph* graph, char* input) {
         PathResult result = dijkstra_shortest_path(graph, start, end);
         
         if (result.found) {
-            // Path exists - print it
+            // Print if path exists
             printf("Path Found...\n");
-            printf("\t");  // Tab character as specified
+            printf("\t"); 
             
             // Print each city in path
             for (int i = 0; i < result.path_length; i++) {
@@ -201,33 +195,33 @@ bool process_command(Graph* graph, char* input) {
  * Main function
  */
 int main(int argc, char* argv[]) {
-    // Check command line arguments: program expects exactly 2 files
+    // Check command line arguments
     if (argc != EXPECTED_ARGS) {
         fprintf(stderr, "Usage: %s <vertices> <distances>\n", argv[0]);
         return ERROR;
     }
     
-    // Create graph with initial capacity
+    // Create graph 
     Graph* graph = graph_create(INITIAL_GRAPH_CAPACITY);
     
-    // Load vertices (cities) from first file
+    // Load vertices
     if (!load_vertices(graph, argv[1])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Load distances (edges) from second file
+    // Load distances
     if (!load_distances(graph, argv[2])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Print welcome message as specified
+    // Print welcome message
     printf("*****Welcome to the shortest path finder!******\n");
     print_help();
     printf("*******************************************************\n");
     
-    // Interactive loop - keep asking for commands
+    // Loop
     char input[MAX_LINE];
     bool continue_loop = true;
     
@@ -238,7 +232,7 @@ int main(int argc, char* argv[]) {
         // Read line from user
         if (!fgets(input, sizeof(input), stdin)) break;  // EOF or error
         
-        // Process command and check if we should continue
+        // Check loop
         continue_loop = process_command(graph, input);
     }
     
