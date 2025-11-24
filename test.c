@@ -130,5 +130,33 @@ void test_shortest_path() {
     graph_destroy(graph);
 }
 
-
+/**
+ * Main test runner
+ */
+int main(void) {
+    printf("========================================\n");
+    printf("  Shortest Path Finder Test Suite\n");
+    printf("========================================\n");
+    
+    test_graph_creation();
+    test_add_vertices();
+    test_find_vertices();
+    test_add_edges();
+    test_shortest_path();
+    
+    printf("\n========================================\n");
+    printf("  Test Summary\n");
+    printf("========================================\n");
+    printf("Total Tests:  %d\n", tests_run);
+    printf("Passed:       %d\n", tests_passed);
+    printf("Failed:       %d\n", tests_failed);
+    
+    if (tests_failed > 0) {
+        printf("\nSOME TESTS FAILED!\n");
+        return 1;
+    } else {
+        printf("\nALL TESTS PASSED!\n");
+        return 0;
+    }
+}
 
