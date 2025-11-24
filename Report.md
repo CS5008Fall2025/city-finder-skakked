@@ -3,6 +3,12 @@ Fill out these report questions.
 
 
 1. What is the difference between a directed and undirected graph?
+   > | Feature | Directed Graph | Undirected Graph |
+|---------|----------------|------------------|
+| Edge type | One-way arrow | Two-way line |
+| Direction | Specific, one-way flow | Non-specific, two-way flow |
+| Edge representation | (u,v) is not the same as (v,u) | (u,v) is the same as (v,u) |
+| Common use | Dependencies, following, one-way systems | Mutual relationships, road networks |
 
 2. What is the Big O of Dijkstra's algorithm.... 
    * Assuming you used an array (or list) to store the vertices.
