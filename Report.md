@@ -85,13 +85,13 @@ For both these questions, are you are free to use what you did as the last secti
 
    > What are some types of graph representation? When would you prefer to use one over the other?
          
-         > -  Adjacency list
+         > Adjacency list
 
-         > -  Adjacency matrix
+         > Adjacency matrix
 
-         > -  Edge list
-         
-         > -  Incidence matrix
+         > Edge list
+
+         > Incidence matrix
 
       
       > For large, sparse graphs such as most real world networks, maps, or social graphs, an adjacency list is usually the best choice. If the graph is dense, or you need constant time edge lookups and the number of vertices is small, an adjacency matrix is preferable.
