@@ -69,3 +69,4 @@ bool load_distances(Graph* graph, const char* filename) {
         return false;
     }
 
+
