@@ -80,6 +80,24 @@ void test_find_vertices() {
     graph_destroy(graph);
 }
 
+/**
+ * Test 4: Adding Edges
+ */
+void test_add_edges() {
+    printf("\n=== Test 4: Adding Edges ===\n");
+    
+    Graph* graph = graph_create(5);
+    graph_add_vertex(graph, "a");
+    graph_add_vertex(graph, "b");
+    
+    bool result1 = graph_add_edge(graph, "a", "b", 10);
+    assert_test(result1, "Successfully added edge a->b");
+    
+    bool result2 = graph_add_edge(graph, "a", "z", 5);
+    assert_test(!result2, "Returns false for non-existing vertex");
+    
+    graph_destroy(graph);
+}
 
 
 
