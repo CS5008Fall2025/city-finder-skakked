@@ -63,6 +63,24 @@ void test_add_vertices() {
 }
 
 
+ // Test 3: Finding Vertices
+void test_find_vertices() {
+    printf("\n=== Test 3: Finding Vertices ===\n");
+    
+    Graph* graph = graph_create(5);
+    graph_add_vertex(graph, "boston");
+    graph_add_vertex(graph, "chicago");
+    
+    int idx1 = graph_find_vertex(graph, "boston");
+    assert_test(idx1 == 0, "Found 'boston' at index 0");
+    
+    int idx2 = graph_find_vertex(graph, "seattle");
+    assert_test(idx2 == -1, "Non-existing vertex returns -1");
+    
+    graph_destroy(graph);
+}
+
+
 
 
 
