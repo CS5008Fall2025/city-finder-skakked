@@ -13,9 +13,16 @@ Fill out these report questions.
 
 2. What is the Big O of Dijkstra's algorithm.... 
    * Assuming you used an array (or list) to store the vertices.
+
+         > $O(V^2)$ - Finding the minimum distance vertex requires scanning all $V$ vertices, and we do this $V$ times in the main loop. This is what our implementation uses.
+
    * Assuming you used a heap / priority queue to store the vertices.
+   
+         > $O((V + E) \log V)$ - The heap makes finding the minimum vertex much faster ($O(\log V)$ instead of $O(V)$), and we update distances efficiently. For sparse graphs where edges are much less than $V^2$, this is significantly better.
+
 
 3. Explain in your own words what that means for larger graphs when trying to find the shortest distance. 
+      > 
 
 
 ## Deeper Thinking
