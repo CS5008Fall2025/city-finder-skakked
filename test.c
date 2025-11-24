@@ -44,6 +44,23 @@ void test_graph_creation() {
     graph_destroy(graph);
 }
 
+// Test 2: Add Vertex
+void test_add_vertices() {
+    printf("\n=== Test 2: Adding Vertices ===\n");
+    
+    Graph* graph = graph_create(5);
+    
+    int idx1 = graph_add_vertex(graph, "boston");
+    assert_test(idx1 == 0, "First vertex index is 0");
+    
+    int idx2 = graph_add_vertex(graph, "chicago");
+    assert_test(idx2 == 1, "Second vertex index is 1");
+    
+    int idx3 = graph_add_vertex(graph, "boston");
+    assert_test(idx3 == 0, "Duplicate vertex returns existing index");
+    
+    graph_destroy(graph);
+}
 
 
 
