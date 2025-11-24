@@ -99,10 +99,9 @@ bool load_distances(Graph* graph, const char* filename) {
         int distance;
         
         // Parse line: city1 city2 distance
-        // sscanf returns number of items successfully parsed
         int parsed = sscanf(line, "%s %s %d", city1, city2, &distance);
         
-        // Skip malformed lines (including empty lines)
+        // Skip lines that don't match expected format
         if (parsed != 3) continue;
         
         // Trim whitespace from city names
@@ -236,7 +235,7 @@ int main(int argc, char* argv[]) {
         continue_loop = process_command(graph, input);
     }
     
-    // Farewell message
+    // Goodbye message
     printf("Goodbye!\n");
     
     // Free all memory

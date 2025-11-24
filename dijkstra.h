@@ -10,7 +10,7 @@
 
 #include "graph.h" // Include the graph data structure
 #include <stdbool.h> // For bool type
-#include <limits.h> // For INT_MAX
+#include <limits.h> 
 
 // Result structure for shortest path
 typedef struct PathResult {

@@ -104,7 +104,7 @@ void test_add_edges() {
  * Test 5: Shortest Path Selection
  */
 void test_shortest_path() {
-    printf("\n=== Test 6: Shortest Path Selection ===\n");
+    printf("\n=== Test 5: Shortest Path Selection ===\n");
     
     // Graph with multiple paths
     Graph* graph = graph_create(5);
