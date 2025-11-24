@@ -62,9 +62,17 @@ Fill out these report questions.
 
 
 7. Take some time to research TSP problems. It falls under a certain classification of problems? What is it? 
+
+      > Traveling Salesperson Problem (TSP) is **NP-Complete**. The "NP" stands for non-deterministic polynomial time.
+      > This means no known polynomial-time algorithm can solve it exactly, and it's among the hardest problems in computer science.
+
 8. Provide some examples of fields / problems that use TSP.
 
-
+      - **Logistics and delivery**: Optimizing routes for parcel delivery companies to reduce distance, fuel, and time.
+      - **Airlines and transportation**: Crew and aircraft rotation planning and route scheduling to increase utilization and lower cost.
+      - **Telecommunications and networking**: Designing routes and cable layouts to minimize total distance.     
+      - **Robotics**: Planning efficient motion for robotic arms that must visit multiple points.  
+ 
 
 > [!TIP]
 > We are having you explore TSP, so you can see the terms used for problem classification that are often the foundation of computer science theory. You will not be asked to know about TSP outside of this assignment or even problem classification. Computer Science is often about dealing with problems considered "too hard" or "impossible", and finding ways to make them possible! As such, knowing topics such as N, NP, NP-Complete, etc. is important to understand the limits (to break).
