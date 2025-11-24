@@ -1,16 +1,14 @@
 /**
- * Name: Siddharth Kakked
- * Semester: Fall 2025
- * CS 5008
- * Dijkstra's algorithm implementation 
+ * dijkstra.c
+ * Implementation of Dijkstra's shortest path algorithm
  */
 
-#include "dijkstra.h" // Include the header file
-#include <stdlib.h> 
+#include "dijkstra.h"
+#include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
 
-#define INFINITY_DIST INT_MAX // Define infinity as maximum integer value
+#define INFINITY_DIST INT_MAX
 
 /**
  * Find vertex with minimum distance that hasn't been visited
@@ -36,7 +34,7 @@ static int min_distance(int* dist, bool* visited, int n) {
  * Reconstruct path from start to end using parent array
  * Parent array stores which vertex we came from to reach each vertex
  */
-static int* reconstruct_path(int* parent, int start, int end, int* length) {
+static int* reconstruct_path(int* parent, int end, int* length) {
     // Count path length by following parent pointers backwards
     int count = 0;
     int current = end;
@@ -126,7 +124,7 @@ PathResult dijkstra_shortest_path(Graph* graph, int start, int end) {
         result.found = true;
         result.total_distance = dist[end];
         // Reconstruct the actual path using parent pointers
-        result.path = reconstruct_path(parent, start, end, &result.path_length);
+        result.path = reconstruct_path(parent, end, &result.path_length);
     }
     
     // Clean up temporary arrays

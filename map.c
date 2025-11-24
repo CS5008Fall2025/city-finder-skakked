@@ -1,12 +1,10 @@
 /**
- * Name: Siddharth Kakked
- * Semester: Fall 2025
- * CS 5008
- * Shortest path finder using Dijkstra's algorithm
+ * map.c
+ * Interactive shortest path finder using Dijkstra's algorithm
  */
 
-#include "graph.h" // Include graph structure and related functions
-#include "dijkstra.h" // Include Dijkstra's algorithm implementation
+#include "graph.h"
+#include "dijkstra.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,14 +18,41 @@
 #define EXPECTED_ARGS 3            // Expected command line arguments
 
 /**
- * CLI help message
+ * Print help message
  */
 void print_help() {
     printf("Commands:\n");
     printf("  list - list all cities\n");
-    printf("  <city1> <city2> - find the shortest path between two cities\n");
+    printf("  path - find the shortest path between two cities\n");
     printf("  help - print this help message\n");
     printf("  exit - exit the program\n");
+}
+
+/**
+ * Trim leading and trailing whitespace from a string
+ */
+void trim_whitespace(char* str) {
+    if (!str) return;
+    
+    // Trim leading whitespace
+    char* start = str;
+    while (*start == ' ' || *start == '\t' || *start == '\r') {
+        start++;
+    }
+    
+    // Trim trailing whitespace
+    char* end = start + strlen(start) - 1;
+    while (end > start && (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')) {
+        end--;
+    }
+    
+    // Null terminate
+    *(end + 1) = '\0';
+    
+    // Move trimmed string to beginning if needed
+    if (start != str) {
+        memmove(str, start, strlen(start) + 1);
+    }
 }
 
 /**
@@ -46,6 +71,9 @@ bool load_vertices(Graph* graph, const char* filename) {
     while (fgets(line, sizeof(line), file)) {
         // Remove newline character at end
         line[strcspn(line, "\n")] = 0;
+        
+        // Trim whitespace from both ends
+        trim_whitespace(line);
         
         // Skip empty lines
         if (strlen(line) == 0) continue;
@@ -68,6 +96,7 @@ bool load_distances(Graph* graph, const char* filename) {
         fprintf(stderr, "Error: Could not open file %s\n", filename);
         return false;
     }
+    
     char line[MAX_LINE];
     // Read file line by line
     while (fgets(line, sizeof(line), file)) {
@@ -80,6 +109,10 @@ bool load_distances(Graph* graph, const char* filename) {
         
         // Skip malformed lines (including empty lines)
         if (parsed != 3) continue;
+        
+        // Trim whitespace from city names
+        trim_whitespace(city1);
+        trim_whitespace(city2);
         
         // Add bidirectional edge to graph
         graph_add_edge(graph, city1, city2, distance);
@@ -94,34 +127,35 @@ bool load_distances(Graph* graph, const char* filename) {
  * Returns false if user wants to exit, true to continue
  */
 bool process_command(Graph* graph, char* input) {
-    // Tokenize input - split by spaces and newlines
-    char* token1 = strtok(input, " \n");
-    if (!token1) return true;  // Empty input, continue
+    // Trim whitespace and remove newline
+    trim_whitespace(input);
     
-    // Handle single-word commands
-    if (strcmp(token1, "exit") == 0) {
+    // Handle commands
+    if (strcmp(input, "exit") == 0) {
         return false;  // Signal to exit program
     }
-    else if (strcmp(token1, "help") == 0) {
+    else if (strcmp(input, "help") == 0) {
         print_help();
     }
-    else if (strcmp(token1, "list") == 0) {
+    else if (strcmp(input, "list") == 0) {
         graph_print_vertices(graph);  // Display all cities
     }
-    else {
-        // Try to parse as two cities: "<city1> <city2>"
-        char* token2 = strtok(NULL, " \n");  // Get second token
+    else if (strcmp(input, "path") == 0) {
+        // Prompt for city 1
+        char city1[MAX_CITY_NAME];
+        printf("Enter first city: ");
+        if (!fgets(city1, sizeof(city1), stdin)) return true;
+        trim_whitespace(city1);
         
-        // If no second token, invalid command
-        if (!token2) {
-            printf("Invalid Command\n");
-            print_help();
-            return true;
-        }
+        // Prompt for city 2
+        char city2[MAX_CITY_NAME];
+        printf("Enter second city: ");
+        if (!fgets(city2, sizeof(city2), stdin)) return true;
+        trim_whitespace(city2);
         
         // Find both cities in graph
-        int start = graph_find_vertex(graph, token1);
-        int end = graph_find_vertex(graph, token2);
+        int start = graph_find_vertex(graph, city1);
+        int end = graph_find_vertex(graph, city2);
         
         // Both cities must exist
         if (start == -1 || end == -1) {
@@ -154,6 +188,10 @@ bool process_command(Graph* graph, char* input) {
         
         // Free path memory
         path_result_destroy(&result);
+    }
+    else {
+        printf("Invalid Command\n");
+        print_help();
     }
     
     return true;  // Continue program
@@ -195,7 +233,7 @@ int main(int argc, char* argv[]) {
     
     while (continue_loop) {
         // Prompt user for input
-        printf("Where do you want to go today? ");
+        printf("Enter command: ");
         
         // Read line from user
         if (!fgets(input, sizeof(input), stdin)) break;  // EOF or error
@@ -210,6 +248,5 @@ int main(int argc, char* argv[]) {
     // Free all memory
     graph_destroy(graph);
     
-    return SUCCESS;  // Success
-
-
+    return SUCCESS;
+}
