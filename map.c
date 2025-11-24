@@ -89,5 +89,76 @@ bool load_distances(Graph* graph, const char* filename) {
     return true;
 }
 
+/**
+ * Process user command
+ * Returns false if user wants to exit, true to continue
+ */
+bool process_command(Graph* graph, char* input) {
+    // Tokenize input - split by spaces and newlines
+    char* token1 = strtok(input, " \n");
+    if (!token1) return true;  // Empty input, continue
+    
+    // Handle single-word commands
+    if (strcmp(token1, "exit") == 0) {
+        return false;  // Signal to exit program
+    }
+    else if (strcmp(token1, "help") == 0) {
+        print_help();
+    }
+    else if (strcmp(token1, "list") == 0) {
+        graph_print_vertices(graph);  // Display all cities
+    }
+    else {
+        // Try to parse as two cities: "<city1> <city2>"
+        char* token2 = strtok(NULL, " \n");  // Get second token
+        
+        // If no second token, invalid command
+        if (!token2) {
+            printf("Invalid Command\n");
+            print_help();
+            return true;
+        }
+        
+        // Find both cities in graph
+        int start = graph_find_vertex(graph, token1);
+        int end = graph_find_vertex(graph, token2);
+        
+        // Both cities must exist
+        if (start == -1 || end == -1) {
+            printf("Invalid Command\n");
+            print_help();
+            return true;
+        }
+        
+        // Find shortest path using Dijkstra's algorithm
+        PathResult result = dijkstra_shortest_path(graph, start, end);
+        
+        if (result.found) {
+            // Path exists - print it
+            printf("Path Found...\n");
+            printf("\t");  // Tab character as specified
+            
+            // Print each city in path
+            for (int i = 0; i < result.path_length; i++) {
+                printf("%s", graph->vertices[result.path[i]].name);
+                if (i < result.path_length - 1) printf(" ");  // Space between cities
+            }
+            printf("\n");
+            
+            // Print total distance
+            printf("\tTotal Distance: %d\n", result.total_distance);
+        } else {
+            // No path exists between cities
+            printf("Path Not Found...\n");
+        }
+        
+        // Free path memory
+        path_result_destroy(&result);
+    }
+    
+    return true;  // Continue program
+}
+
+
 
 
