@@ -24,12 +24,12 @@ Fill out these report questions.
 3. Explain in your own words what that means for larger graphs when trying to find the shortest distance. 
       > For small graphs with only a few dozen vertices, both implementations are fast enough and the choice does not matter much.
 
-As graphs grow, the difference becomes huge. With 10,000 vertices:
+      > As graphs grow, the difference becomes huge. With 10,000 vertices:
 
-- Array version: about $V^2 = 100,000,000$ operations  
-- Heap version: roughly $(V + E) \log V$, which for a sparse graph is on the order of a few hundred thousand operations
+      >- Array version: about $V^2 = 100,000,000$ operations  
+      >- Heap version: roughly $(V + E) \log V$, which for a sparse graph is on the order of a few hundred thousand operations
 
-That is around two orders of magnitude faster. The key idea is that $O(V^2)$ grows quadratically. Doubling the number of vertices roughly quadruples the work.
+      > That is around two orders of magnitude faster. The key idea is that $O(V^2)$ grows quadratically. Doubling the number of vertices roughly quadruples the work.
 
 
 ## Deeper Thinking
