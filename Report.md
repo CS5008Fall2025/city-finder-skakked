@@ -84,13 +84,18 @@ For both these questions, are you are free to use what you did as the last secti
 1. Select one technical interview question (this module or previous) from the [technical interview list](https://github.com/CS5008-khoury/Resources/blob/main/TechInterviewQuestions.md) below and answer it in a few sentences. You can use any resource you like to answer the question.
 
    > What are some types of graph representation? When would you prefer to use one over the other?
+         
          > -  Adjacency list
+
          > -  Adjacency matrix
+
          > -  Edge list
+         
          > -  Incidence matrix
 
-         > For large, sparse graphs such as most real world networks, maps, or social graphs, an adjacency list is usually the best choice. If the graph is dense, or you need constant time edge lookups and the number of vertices is small, an adjacency matrix is preferable.
-         
+      
+      > For large, sparse graphs such as most real world networks, maps, or social graphs, an adjacency list is usually the best choice. If the graph is dense, or you need constant time edge lookups and the number of vertices is small, an adjacency matrix is preferable.
+
 
 
 
