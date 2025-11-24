@@ -68,5 +68,26 @@ bool load_distances(Graph* graph, const char* filename) {
         fprintf(stderr, "Error: Could not open file %s\n", filename);
         return false;
     }
+    char line[MAX_LINE];
+    // Read file line by line
+    while (fgets(line, sizeof(line), file)) {
+        char city1[MAX_CITY_NAME], city2[MAX_CITY_NAME];
+        int distance;
+        
+        // Parse line: city1 city2 distance
+        // sscanf returns number of items successfully parsed
+        int parsed = sscanf(line, "%s %s %d", city1, city2, &distance);
+        
+        // Skip malformed lines (including empty lines)
+        if (parsed != 3) continue;
+        
+        // Add bidirectional edge to graph
+        graph_add_edge(graph, city1, city2, distance);
+    }
+    
+    fclose(file);
+    return true;
+}
+
 
 
