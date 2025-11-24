@@ -49,16 +49,17 @@ Fill out these report questions.
 5. Related to shortest distance, is a problem called the "messenger" or "traveling sales person" problem commonly abbreviated to TSP. This problem is to find the shortest path that visits **every** vertex in a graph. Another way to look at it, is you are an delivery driver, and you have a series of packages to deliver. Can you find an optimal path for your deliveries that minimizes the total distance traveled? Imagine if you had 5 stops. How many different paths are there?  There are 120 possible paths to look at! (assuming fully connected routes). 
    * How many possible paths are there if you have 6 stops?
          
-         $6! = 720$ possible paths
+      $6! = 720$ possible paths
 
    * How many possible paths are there if you have 10 stops?
          
-         $10! = 3,628,800$ possible paths
+      $10! = 3,628,800$ possible paths
 
 6. What type of growth is this problem? 
 
       >  Factorial growth: $O(n!)$
-      > 
+      > It grows extremely fast. Each additional stop multiplies the number of possible routes by the new number of stops. By 20 stops, there are on the order of $2.4 \times 10^{18}$ possible tours, which makes brute force enumeration completely unrealistic.
+
 
 7. Take some time to research TSP problems. It falls under a certain classification of problems? What is it? 
 8. Provide some examples of fields / problems that use TSP.
