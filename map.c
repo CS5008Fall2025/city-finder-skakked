@@ -91,6 +91,7 @@ bool process_command(Graph* graph, char* input) {
     // Handle commands
     if (strcmp(token1, "exit") == 0) {
         return false;  // Exit
+    } 
     else if (strcmp(token1, "help") == 0) {
         print_help();
     }
