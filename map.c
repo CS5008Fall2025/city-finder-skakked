@@ -1,8 +1,3 @@
-/**
- * map.c
- * Interactive shortest path finder using Dijkstra's algorithm
- */
-
 #include "graph.h"
 #include "dijkstra.h"
 #include <stdio.h>
@@ -23,37 +18,14 @@
 void print_help() {
     printf("Commands:\n");
     printf("  list - list all cities\n");
-    printf("  path - find the shortest path between two cities\n");
+    printf("  <city1> <city2> - find the shortest path between two cities\n");
     printf("  help - print this help message\n");
     printf("  exit - exit the program\n");
 }
 
 /**
- * Trim whitespaces from user input
- */
-void trim_whitespace(char* str) {
-    if (!str) return;
-    
-    // Trim front whitespace
-    char* start = str;
-    while (*start == ' ' || *start == '\t' || *start == '\r') {
-        start++;
-    }
-    
-    // Trim back whitespace
-    char* end = start + strlen(start) - 1;
-    while (end > start && (*end == ' ' || *end == '\t' || *end == '\r' || *end == '\n')) {
-        end--;
-    }
-    
-    *(end + 1) = '\0';
-    if (start != str) {
-        memmove(str, start, strlen(start) + 1);
-    }
-}
-
-/**
  * Load vertices from file
+ * Each line in file is a city name
  */
 bool load_vertices(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -65,11 +37,8 @@ bool load_vertices(Graph* graph, const char* filename) {
     char line[MAX_LINE];
     // Read file line by line
     while (fgets(line, sizeof(line), file)) {
-        // Remove \n at the end
+        // Remove newline character at end
         line[strcspn(line, "\n")] = 0;
-        
-        // Trim whitespaces
-        trim_whitespace(line);
         
         // Skip empty lines
         if (strlen(line) == 0) continue;
@@ -84,6 +53,7 @@ bool load_vertices(Graph* graph, const char* filename) {
 
 /**
  * Load distances from file
+ * Each line format: city1 city2 distance
  */
 bool load_distances(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -99,14 +69,11 @@ bool load_distances(Graph* graph, const char* filename) {
         int distance;
         
         // Parse line: city1 city2 distance
+        // sscanf returns number of items successfully parsed
         int parsed = sscanf(line, "%s %s %d", city1, city2, &distance);
         
-        // Skip lines that don't match expected format
+        // Skip malformed lines (including empty lines)
         if (parsed != 3) continue;
-        
-        // Trim whitespace from city names
-        trim_whitespace(city1);
-        trim_whitespace(city2);
         
         // Add bidirectional edge to graph
         graph_add_edge(graph, city1, city2, distance);
@@ -118,37 +85,37 @@ bool load_distances(Graph* graph, const char* filename) {
 
 /**
  * Process user command
+ * Returns false if user wants to exit, true to continue
  */
 bool process_command(Graph* graph, char* input) {
-    // Trim whitespaces and remove \n
-    trim_whitespace(input);
+    // Trim input and tokenize
+    char* token1 = strtok(input, " \t\n\r");
+    if (!token1) return true;  // Empty input, continue
     
     // Handle commands
-    if (strcmp(input, "exit") == 0) {
-        return false;  // Exits program
+    if (strcmp(token1, "exit") == 0) {
+        return false;  // Signal to exit program
     }
-    else if (strcmp(input, "help") == 0) {
+    else if (strcmp(token1, "help") == 0) {
         print_help();
     }
-    else if (strcmp(input, "list") == 0) {
+    else if (strcmp(token1, "list") == 0) {
         graph_print_vertices(graph);  // Display all cities
     }
-    else if (strcmp(input, "path") == 0) {
-        // Prompt for city 1
-        char city1[MAX_CITY_NAME];
-        printf("Enter first city: ");
-        if (!fgets(city1, sizeof(city1), stdin)) return true;
-        trim_whitespace(city1);
+    else {
+        // Try to parse as two cities: "<city1> <city2>"
+        char* token2 = strtok(NULL, " \t\n\r");  // Get second token
         
-        // Prompt for city 2
-        char city2[MAX_CITY_NAME];
-        printf("Enter second city: ");
-        if (!fgets(city2, sizeof(city2), stdin)) return true;
-        trim_whitespace(city2);
+        // If no second token, invalid command
+        if (!token2) {
+            printf("Invalid Command\n");
+            print_help();
+            return true;
+        }
         
         // Find both cities in graph
-        int start = graph_find_vertex(graph, city1);
-        int end = graph_find_vertex(graph, city2);
+        int start = graph_find_vertex(graph, token1);
+        int end = graph_find_vertex(graph, token2);
         
         // Both cities must exist
         if (start == -1 || end == -1) {
@@ -161,9 +128,9 @@ bool process_command(Graph* graph, char* input) {
         PathResult result = dijkstra_shortest_path(graph, start, end);
         
         if (result.found) {
-            // Print if path exists
+            // Path exists - print it
             printf("Path Found...\n");
-            printf("\t"); 
+            printf("\t");  // Tab character as specified
             
             // Print each city in path
             for (int i = 0; i < result.path_length; i++) {
@@ -182,10 +149,6 @@ bool process_command(Graph* graph, char* input) {
         // Free path memory
         path_result_destroy(&result);
     }
-    else {
-        printf("Invalid Command\n");
-        print_help();
-    }
     
     return true;  // Continue program
 }
@@ -194,48 +157,48 @@ bool process_command(Graph* graph, char* input) {
  * Main function
  */
 int main(int argc, char* argv[]) {
-    // Check command line arguments
+    // Check command line arguments: program expects exactly 2 files
     if (argc != EXPECTED_ARGS) {
         fprintf(stderr, "Usage: %s <vertices> <distances>\n", argv[0]);
         return ERROR;
     }
     
-    // Create graph 
+    // Create graph with initial capacity
     Graph* graph = graph_create(INITIAL_GRAPH_CAPACITY);
     
-    // Load vertices
+    // Load vertices (cities) from first file
     if (!load_vertices(graph, argv[1])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Load distances
+    // Load distances (edges) from second file
     if (!load_distances(graph, argv[2])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Print welcome message
+    // Print welcome message as specified
     printf("*****Welcome to the shortest path finder!******\n");
     print_help();
     printf("*******************************************************\n");
     
-    // Loop
+    // Interactive loop - keep asking for commands
     char input[MAX_LINE];
     bool continue_loop = true;
     
     while (continue_loop) {
         // Prompt user for input
-        printf("Enter command: ");
+        printf("Where do you want to go today? ");
         
         // Read line from user
         if (!fgets(input, sizeof(input), stdin)) break;  // EOF or error
         
-        // Check loop
+        // Process command and check if we should continue
         continue_loop = process_command(graph, input);
     }
     
-    // Goodbye message
+    // Farewell message
     printf("Goodbye!\n");
     
     // Free all memory
