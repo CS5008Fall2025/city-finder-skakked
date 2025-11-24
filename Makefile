@@ -1,13 +1,36 @@
-CC = gcc   # This variable is which compiler to use, we will use the variable later by $(CC)
-CFLAGS = -Wall  # this variable is command line arguments
-CFILES =  # this variable is the list of files to compile - UPDATE THIS LINE with your files
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -g  # -Wall=all warnings, -Wextra=extra warnings, -g=debug symbols
+TARGET = map.out
 
-all: myprogram  #runs target myprogram is nothing is passed into make
+# Object files needed for final executable
+OBJS = map.o graph.o dijkstra.o
 
-myprogram: # it needs to compile out to >>>map.out<<<!
-	$(CC) $(CFLAGS) -o map.out $(CFILES)  
-	
+# Default target - builds everything
+all: $(TARGET)
 
+# Link object files to create executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
-clean: #this is a clean target, it removes all the .out files, called via > make clean
-	rm  *.out
+# Compile map.c to map.o
+# Dependencies: graph.h and dijkstra.h (if these change, recompile)
+map.o: map.c graph.h dijkstra.h
+	$(CC) $(CFLAGS) -c map.c
+
+# Compile graph.c to graph.o
+# Dependencies: graph.h
+graph.o: graph.c graph.h
+	$(CC) $(CFLAGS) -c graph.c
+
+# Compile dijkstra.c to dijkstra.o
+# Dependencies: dijkstra.h and graph.h
+dijkstra.o: dijkstra.c dijkstra.h graph.h
+	$(CC) $(CFLAGS) -c dijkstra.c
+
+# Clean up build files - removes all .o files and executable
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# Phony targets - not actual files, just commands
+.PHONY: all clean
