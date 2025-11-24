@@ -159,6 +159,57 @@ bool process_command(Graph* graph, char* input) {
     return true;  // Continue program
 }
 
-
+/**
+ * Main function
+ */
+int main(int argc, char* argv[]) {
+    // Check command line arguments: program expects exactly 2 files
+    if (argc != EXPECTED_ARGS) {
+        fprintf(stderr, "Usage: %s <vertices> <distances>\n", argv[0]);
+        return ERROR;
+    }
+    
+    // Create graph with initial capacity
+    Graph* graph = graph_create(INITIAL_GRAPH_CAPACITY);
+    
+    // Load vertices (cities) from first file
+    if (!load_vertices(graph, argv[1])) {
+        graph_destroy(graph);  // Clean up on error
+        return ERROR;
+    }
+    
+    // Load distances (edges) from second file
+    if (!load_distances(graph, argv[2])) {
+        graph_destroy(graph);  // Clean up on error
+        return ERROR;
+    }
+    
+    // Print welcome message as specified
+    printf("*****Welcome to the shortest path finder!******\n");
+    print_help();
+    printf("*******************************************************\n");
+    
+    // Interactive loop - keep asking for commands
+    char input[MAX_LINE];
+    bool continue_loop = true;
+    
+    while (continue_loop) {
+        // Prompt user for input
+        printf("Where do you want to go today? ");
+        
+        // Read line from user
+        if (!fgets(input, sizeof(input), stdin)) break;  // EOF or error
+        
+        // Process command and check if we should continue
+        continue_loop = process_command(graph, input);
+    }
+    
+    // Farewell message
+    printf("Goodbye!\n");
+    
+    // Free all memory
+    graph_destroy(graph);
+    
+    return SUCCESS;  // Success
 
 
