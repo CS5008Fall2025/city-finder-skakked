@@ -13,7 +13,7 @@
 #define EXPECTED_ARGS 3            // Expected command line arguments
 
 /**
- * Print help message
+ * Print welcome message
  */
 void print_help() {
     printf("Commands:\n");
@@ -25,7 +25,6 @@ void print_help() {
 
 /**
  * Load vertices from file
- * Each line in file is a city name
  */
 bool load_vertices(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -53,7 +52,6 @@ bool load_vertices(Graph* graph, const char* filename) {
 
 /**
  * Load distances from file
- * Each line format: city1 city2 distance
  */
 bool load_distances(Graph* graph, const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -68,14 +66,13 @@ bool load_distances(Graph* graph, const char* filename) {
         char city1[MAX_CITY_NAME], city2[MAX_CITY_NAME];
         int distance;
         
-        // Parse line: city1 city2 distance
-        // sscanf returns number of items successfully parsed
-        int parsed = sscanf(line, "%s %s %d", city1, city2, &distance);
+
+        int parsed = sscanf(line, "%s %s %d", city1, city2, &distance); // Parse line
         
-        // Skip malformed lines (including empty lines)
+        // Skip invalid lines
         if (parsed != 3) continue;
         
-        // Add bidirectional edge to graph
+        // Add two way edge between cities
         graph_add_edge(graph, city1, city2, distance);
     }
     
@@ -85,17 +82,15 @@ bool load_distances(Graph* graph, const char* filename) {
 
 /**
  * Process user command
- * Returns false if user wants to exit, true to continue
  */
 bool process_command(Graph* graph, char* input) {
-    // Trim input and tokenize
-    char* token1 = strtok(input, " \t\n\r");
-    if (!token1) return true;  // Empty input, continue
+    // Tokenize input
+    char* token1 = strtok(input, " \t\n\r"); 
+    if (!token1) return true;  // Continue if empty input
     
     // Handle commands
     if (strcmp(token1, "exit") == 0) {
-        return false;  // Signal to exit program
-    }
+        return false;  // Exit
     else if (strcmp(token1, "help") == 0) {
         print_help();
     }
@@ -103,8 +98,8 @@ bool process_command(Graph* graph, char* input) {
         graph_print_vertices(graph);  // Display all cities
     }
     else {
-        // Try to parse as two cities: "<city1> <city2>"
-        char* token2 = strtok(NULL, " \t\n\r");  // Get second token
+        // Parse two city names
+        char* token2 = strtok(NULL, " \t\n\r");  
         
         // If no second token, invalid command
         if (!token2) {
@@ -130,7 +125,7 @@ bool process_command(Graph* graph, char* input) {
         if (result.found) {
             // Path exists - print it
             printf("Path Found...\n");
-            printf("\t");  // Tab character as specified
+            printf("\t");  
             
             // Print each city in path
             for (int i = 0; i < result.path_length; i++) {
@@ -157,33 +152,33 @@ bool process_command(Graph* graph, char* input) {
  * Main function
  */
 int main(int argc, char* argv[]) {
-    // Check command line arguments: program expects exactly 2 files
+    // CLI argument check
     if (argc != EXPECTED_ARGS) {
         fprintf(stderr, "Usage: %s <vertices> <distances>\n", argv[0]);
         return ERROR;
     }
     
-    // Create graph with initial capacity
+    // Create graph
     Graph* graph = graph_create(INITIAL_GRAPH_CAPACITY);
     
-    // Load vertices (cities) from first file
+    // Load vertices
     if (!load_vertices(graph, argv[1])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Load distances (edges) from second file
+    // Load distances
     if (!load_distances(graph, argv[2])) {
         graph_destroy(graph);  // Clean up on error
         return ERROR;
     }
     
-    // Print welcome message as specified
+    // Print welcome message 
     printf("*****Welcome to the shortest path finder!******\n");
     print_help();
     printf("*******************************************************\n");
     
-    // Interactive loop - keep asking for commands
+    // Main command loop
     char input[MAX_LINE];
     bool continue_loop = true;
     
@@ -194,7 +189,7 @@ int main(int argc, char* argv[]) {
         // Read line from user
         if (!fgets(input, sizeof(input), stdin)) break;  // EOF or error
         
-        // Process command and check if we should continue
+        // Continue loop
         continue_loop = process_command(graph, input);
     }
     
